@@ -578,40 +578,5 @@ if (empty($config['interfaces']['lan'])) {
     $restart_dhcpd = true;
 }
 
-echo "\nWriting configuration...";
-flush();
-write_config(sprintf('%s configuration from console menu', $interface));
-echo "done.\n";
-
-system_resolver_configure(true);
-interface_reset($interface);
-interface_configure(true, $interface, true);
-filter_configure_sync(true);
-
-if ($restart_dhcpd) {
-    plugins_configure('dhcp', true);
-}
-
-if ($restart_webgui) {
-    plugins_configure('webgui', true);
-}
-
-echo "\n";
-
-if ($intip != '' || $intip6 != '') {
-    if (count($ifdescrs) == '1' or $interface == 'lan') {
-        $intip = get_interface_ip($interface);
-        $intip6 = get_interface_ipv6($interface);
-        echo "You can now access the web GUI by opening\nthe following URL in your web browser:\n\n";
-        $webuiport = !empty($config['system']['webgui']['port']) ? ":{$config['system']['webgui']['port']}" : '';
-        if (is_ipaddr($intip)) {
-            echo "    {$config['system']['webgui']['protocol']}://{$intip}{$webuiport}\n";
-        }
-        if (is_ipaddr($intip6)) {
-            echo "    {$config['system']['webgui']['protocol']}://[{$intip6}]{$webuiport}\n";
-        }
-    }
-}
-
-/* rest now or hit CTRL-C */
-sleep(3);
+// code has been outsourced so that it can be reused for a addon script
+require_once("setaddr.apply.php");
